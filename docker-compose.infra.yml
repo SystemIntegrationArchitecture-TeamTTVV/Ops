@@ -86,6 +86,9 @@ services:
     image: prom/prometheus:v2.53.1
     container_name: prometheus
     restart: unless-stopped
+    # Linux: để scrape Spring chạy trên host qua host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus

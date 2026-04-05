@@ -1,26 +1,31 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
-# VPS mode: replace targets below with your deployed backend domains/IPs.
-# Tip:
-# - If backend exposes HTTPS, add: scheme: https
-# - If Actuator is behind a gateway path, update metrics_path accordingly
+# Prometheus tự scrape.
 scrape_configs:
-  - job_name: "apigateway"
-    metrics_path: "/actuator/prometheus"
+  - job_name: prometheus
     static_configs:
       - targets:
-          - "CHANGE_ME_APIGATEWAY_HOST:8088"
+          - localhost:9090
 
-  - job_name: "commonservice"
-    metrics_path: "/actuator/prometheus"
+  # Spring Boot (Actuator + micrometer-registry-prometheus) chạy trên máy HOST.
+  # Prometheus chạy trong container → dùng host.docker.internal (Docker Desktop + Linux có extra_hosts host-gateway).
+  # Trên Droplet Linux không dùng Docker cho app: thay bằng IP private của Droplet hoặc 172.17.0.1.
+  - job_name: apigateway
+    metrics_path: /actuator/prometheus
     static_configs:
       - targets:
-          - "CHANGE_ME_COMMONSERVICE_HOST:8081"
+          - host.docker.internal:8088
 
-  - job_name: "messegeservice"
-    metrics_path: "/actuator/prometheus"
+  - job_name: commonservice
+    metrics_path: /actuator/prometheus
     static_configs:
       - targets:
-          - "CHANGE_ME_MESSEGESERVICE_HOST:8082"
+          - host.docker.internal:8081
 
+  - job_name: messegeservice
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - host.docker.internal:8082
