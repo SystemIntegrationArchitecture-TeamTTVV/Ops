@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+
+# VPS mode: replace targets below with your deployed backend domains/IPs.
+# Tip:
+# - If backend exposes HTTPS, add: scheme: https
+# - If Actuator is behind a gateway path, update metrics_path accordingly
+scrape_configs:
+  - job_name: "apigateway"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets:
+          - "CHANGE_ME_APIGATEWAY_HOST:8088"
+
+  - job_name: "commonservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets:
+          - "CHANGE_ME_COMMONSERVICE_HOST:8081"
+
+  - job_name: "messegeservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets:
+          - "CHANGE_ME_MESSEGESERVICE_HOST:8082"
+
